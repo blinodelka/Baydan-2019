@@ -1,0 +1,233 @@
+---
+title: "Иерархические модели в RStan"
+author: "Марина Дубова"
+output: html_notebook
+---
+
+```{r}
+library(rstan)
+library(ggmcmc)
+library(bayesplot)
+```
+
+## Генерация данных
+
+Внутригрупповой дизайн
+
+У каждого испытуемого своё смещение, размер эффекта у всех один
+
+```{r}
+N_sub <- 30 # количество испытуемых
+N_trials <- 10 # количество наблюдений для каждого испытуемого для каждого из двух условий
+
+sigma <- 5 # стандартное отклонение (шум) измерения, одинаковое для всех испытуемых 
+intercept_mean <- 5 # среднее смещение по всем испытуемым
+intercept_sd <- 8 # стандартное отклонение (вариация) смещения среди испытуемых
+effect_size <- 2 # размер эффекта
+
+intercept_subj = rnorm(N_sub, intercept_mean, intercept_sd) # случайная генерация смещений для всех испытуемых
+
+# генерация данных для каждого из испытуемых
+data <- NULL
+for(subj in 1:N_sub){
+	data = rbind(
+		data
+		, data.frame(
+			id = subj
+			, condition = 0
+			, Y = rnorm(N_trials, intercept_subj[subj], sigma) # без воздействия - нет эффекта
+		)
+		, data.frame(
+			id = subj
+			, condition = 1
+			, Y = rnorm(N_trials, intercept_subj[subj] + effect_size, sigma) # с воздействием + эффект
+		)
+	)
+}
+
+data$id = factor(data$id) # факторизация идентификационных номеров испытуемых
+
+
+data_1 = list(
+	nY = nrow(data)
+	, nS = length(unique(data$id))
+	, Y = data$Y
+	, cond = data$condition
+	, Subj = as.numeric(data$id)
+)
+```
+
+## Модель 1
+
+Оценка размера эффекта с учетом индивидуальных смещений
+
+```{r}
+model_1 <-
+'
+data {
+	int<lower=1> nY; # количество наблюдений (всего)
+	int<lower=1> nS; # количество испытуемых
+	int<lower=1,upper=nS> Subj[nY]; # вектор с номерами испытуемых
+	vector[nY] cond; # условие
+	vector[nY] Y; # вектор наблюдений
+}
+
+parameters {
+	real<lower=0> sigma; # стандартное отклонение (шум) измерения, одинаковое для всех испытуемых 
+	real intercept; # среднее смещение по всем испытуемым
+	real<lower=0> intercept_sd ; # стандартное отклонение (вариация) смещения среди испытуемых
+  real effect; # размер эффекта
+	vector[nS] Sintercept ; # переменная, чтобы сохранять смещение для каждого из испытуемых
+}
+
+model {
+	# априорные распределения
+	sigma ~ cauchy(0,20);
+	intercept ~ normal(5,10);
+	effect ~ normal(0,10);
+	intercept_sd ~ cauchy(0,20);
+
+	# определить, "откуда" (из какого распределения по популяции) генерировались индивидуальные смещения 
+	Sintercept ~ normal(intercept,intercept_sd);
+
+	# генерация наблюдений с учетом индивидуального смещения и условия
+	for(i in 1:nY){
+		Y[i] ~ normal(Sintercept[Subj[i]] + effect*cond[i] , sigma) ;
+	}
+
+}
+'
+```
+
+```{r}
+fit_1 <- stan(model_code = model_1, data = data_1)
+```
+
+```{r}
+print(fit_1)
+```
+
+Визуализация индивидуальных смещений 
+
+```{r}
+posterior_1 <- as.array(fit_1)
+mcmc_areas(posterior_1, regex_pars = c("Sintercept"), prob = 0.8, prob_outer = 0.95, point_est = "mean")
+```
+
+```{r}
+posterior_1b <- ggs(fit_1)
+ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_traceplot') 
+ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_compare_partial') 
+ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_autocorrelation') 
+```
+
+## Генерация данных
+
+Внутригрупповой дизайн
+
+У каждого испытуемого своё смещение и свой размер эффекта
+
+```{r}
+N_sub = 30 
+N_trials = 10 
+
+sigma = 5 
+intercept_mean = 5
+intercept_sd = 8
+effect_mean = 2
+effect_sd = 3
+
+intercept_subj = rnorm(N_sub, intercept_mean, intercept_sd)
+effect_subj = rnorm(N_sub, effect_mean, effect_sd)
+
+data = NULL
+for(subj in 1:N_sub){
+	data = rbind(
+		data
+		, data.frame(
+			id = subj
+			, condition = 0
+			, Y = rnorm(N_trials, intercept_subj[subj], sigma)
+		)
+		, data.frame(
+			id = subj
+			, condition = 1
+			, Y = rnorm(N_trials, intercept_subj[subj] + effect_subj[subj], sigma)
+		)
+	)
+}
+
+data$id = factor(data$id)
+
+
+data_2 = list(
+	nY = nrow(data)
+	, nS = length(unique(data$id))
+	, Y = data$Y
+	, cond = factor_to_contrast(data$condition)
+	, Subj = as.numeric(data$id)
+)
+```
+
+## Модель 2
+
+Оценка размера эффекта с учетом индивидуальных смещений
+
+```{r}
+model_2 <-
+'
+data {
+	int<lower=1> nY ; # num trials
+	int<lower=1> nS ; # num subjects
+	int<lower=1,upper=nS> Subj[nY] ; 
+	vector[nY] cond; # contrast for trial
+	vector[nY] Y ; # outcomes
+}
+parameters {
+	real<lower=0> sigma ; 
+	real intercept ; 
+	real effect ; 
+	real<lower=0> intercept_sd ; 
+	real<lower=0> effect_sd ;
+	vector[nS] Sintercept ; 
+	vector[nS] Seffect ; 
+}
+model {
+	sigma ~ cauchy(0,20) ;
+	intercept ~ normal(5,10) ;
+	effect ~ normal(0,10) ;
+	intercept_sd ~ cauchy(0,20) ;
+	effect_sd ~ cauchy(0,20) ;
+
+	Sintercept ~ normal(intercept,intercept_sd) ;
+	Seffect ~ normal(effect,effect_sd);
+
+	for(i in 1:nY){
+		Y[i] ~ normal(Sintercept[Subj[i]] + Seffect[Subj[i]]*cond[i] , sigma) ;
+	}
+
+}
+'
+```
+
+```{r}
+fit_2 <- stan(model_code = model_2, data = data_2)
+```
+
+```{r}
+print(fit_2)
+```
+
+```{r}
+posterior_2 <- as.array(fit_2)
+mcmc_areas(posterior_2, regex_pars = c("Sintercept"), prob = 0.8, prob_outer = 0.95, point_est = "mean")
+mcmc_areas(posterior_2, regex_pars = c("Seffect"), prob = 0.8, prob_outer = 0.95, point_est = "mean")
+```
+
+```{r}
+posterior_2b <- ggs(fit_2)
+ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_traceplot') 
+ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_compare_partial') 
+ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_autocorrelation') 
+```
+
