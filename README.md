@@ -1,6 +1,6 @@
 # Baydan_2019
 ## Winter School on Bayesian Statistics 
-## Moscow, 3-8 of January 2019
+### Moscow, 3-8 of January 2019
 
 Materials for Bayesian data analysis practice with RStan (In Russian)
 
