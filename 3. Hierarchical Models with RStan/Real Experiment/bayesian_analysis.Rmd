@@ -1,0 +1,91 @@
+---
+title: "Bayesian Analysis"
+output: html_notebook
+---
+
+```{r}
+library(rstan)
+library(ggmcmc)
+library(bayesplot)
+library(bridgesampling)
+```
+
+```{r}
+load("data_for_stan.RData")
+list_for_stan <- list(nY = nrow(data_for_stan), nS = max(data_for_stan$participant), Subj = data_for_stan$participant, size_diff = data_for_stan$size, num_of_trials = data_for_stan$number_of_fixational_trials, Y = data_for_stan$answer.keys)
+```
+
+## Оценка связи типа иллюзии и разницы между стимулами 
+
+```{r}
+fit_1 <- stan("bayes_model_1.stan", data = list_for_stan, iter = 6000, warmup = 2000)
+```
+
+```{r}
+print(fit_1)
+```
+
+```{r}
+posterior_1 <- as.array(fit_1)
+mcmc_areas(posterior_1, regex_pars = c("beta"), prob = 0.8, prob_outer = 0.95, point_est = "mean")
+```
+
+Диагностика
+
+```{r}
+posterior_1b <- ggs(fit_1)
+ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_traceplot') 
+ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_compare_partial') 
+ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_autocorrelation') 
+```
+
+
+## Оценка связи типа иллюзии и количеством установочных проб
+
+```{r}
+fit_2 <- stan("bayes_model_2.stan", data = list_for_stan, iter = 6000, warmup = 2000)
+```
+
+
+```{r}
+print(fit_2)
+```
+
+
+```{r}
+posterior_2 <- as.array(fit_2)
+mcmc_areas(posterior_2, regex_pars = c("beta"), prob = 0.8, prob_outer = 0.95, point_est = "mean")
+```
+
+Диагностика
+
+```{r}
+posterior_2b <- ggs(fit_2)
+ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_traceplot') 
+ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_compare_partial') 
+ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_autocorrelation') 
+```
+
+## Оценка взаимодействия двух факторов
+
+```{r}
+fit_3 <- stan("bayes_model_3.stan", data = list_for_stan, iter = 6000, warmup = 2000)
+```
+
+```{r}
+print(fit_3)
+```
+
+```{r}
+posterior_3 <- as.array(fit_3)
+mcmc_areas(posterior_3, regex_pars = c("beta"), prob = 0.8, prob_outer = 0.95, point_est = "mean")
+```
+
+Диагностика
+
+```{r}
+posterior_3b <- ggs(fit_3)
+ggmcmc(D = posterior_3b, file = NULL, plot = 'ggs_traceplot') 
+ggmcmc(D = posterior_3b, file = NULL, plot = 'ggs_compare_partial') 
+ggmcmc(D = posterior_3b, file = NULL, plot = 'ggs_autocorrelation') 
+```
