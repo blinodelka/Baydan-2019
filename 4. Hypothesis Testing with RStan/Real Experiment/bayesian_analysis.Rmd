@@ -1,0 +1,207 @@
+---
+title: "Bayesian Analysis"
+output: html_notebook
+---
+
+```{r}
+library(rstan)
+library(ggmcmc)
+library(bayesplot)
+library(bridgesampling)
+```
+
+```{r}
+load("data_for_stan.RData")
+list_for_stan <- list(nY = nrow(data_for_stan), nS = max(data_for_stan$participant), Subj = data_for_stan$participant, size_diff = data_for_stan$size, num_of_trials = data_for_stan$number_of_fixational_trials, Y = data_for_stan$answer.keys)
+```
+
+## Проверка гипотезы о связи типа иллюзии и разницы между стимулами (больше разница - больше вероятность контрастной иллюзии)
+
+```{r}
+# компилируем модели, соответствующие двум гипотезам
+stanmodelH0 <- stan_model('H0_1.stan', model_name = 'H0') 
+stanmodelH1 <- stan_model('H1_1.stan', model_name = 'H1')
+
+# сэмплируем "предсказания" каждой из гипотез (моделей), нужно сгенерировать очень много 
+fit_H0 <- sampling(stanmodelH0, list_for_stan, iter = 20000, warmup = 1000)
+fit_H1 <- sampling(stanmodelH1, list_for_stan, iter = 20000, warmup = 1000)
+```
+
+```{r}
+print(fit_H0)
+print(fit_H1)
+```
+
+## Диагностика
+
+```{r}
+posterior_H0 <- ggs(fit_H0)
+posterior_H1 <- ggs(fit_H1)
+
+ggmcmc(D = posterior_H0, file = NULL, family = 'beta_mu', plot = 'ggs_histogram')
+ggmcmc(D = posterior_H1, file = NULL, family = 'beta_mu', plot = 'ggs_histogram')
+
+ggmcmc(D = posterior_H0, file = NULL, family = 'beta_mu', plot = 'ggs_compare_partial')
+ggmcmc(D = posterior_H1, file = NULL, family = 'beta_mu', plot = 'ggs_compare_partial')
+
+ggmcmc(D = posterior_H0, file = NULL, family = 'beta_mu', plot = 'ggs_traceplot')
+ggmcmc(D = posterior_H1, file = NULL, family = 'beta_mu', plot = 'ggs_traceplot')
+
+ggmcmc(D = posterior_H0, file = NULL, family = 'beta_mu', plot = 'ggs_autocorrelation')
+ggmcmc(D = posterior_H1, file = NULL, family = 'beta_mu', plot = 'ggs_autocorrelation')
+```
+
+## Байес-фактор
+
+```{r}
+# считаем логарифм правдоподобия имеющихся данных для каждой из гипотез (моделей)
+H0_res <- bridge_sampler(fit_H0, silent = TRUE)
+H1_res <- bridge_sampler(fit_H1, silent = TRUE)
+print(H0_res)
+print(H1_res)
+```
+
+```{r}
+# смотрим на оценку возможной ошибки подсчета правдоподобия
+error_measures(H0_res)$percentage
+error_measures(H1_res)$percentage
+```
+
+Предполагаем, что обе гипотезы одинаково вероятны (имеют одинаковую априорную вероятность)
+
+```{r}
+# считаем Байес-фактор (в пользу альтернативной гипотезы)
+BF10 <- bf(H1_res, H0_res)
+print(BF10)
+
+# считаем Байес-фактор (в пользу нулевой гипотезы)
+BF01 <- bf(H0_res, H1_res)
+print(BF01)
+```
+
+
+## Проверка гипотезы о связи типа иллюзии и количеством установочных проб (больше кол-во проб - больше вероятность контрастной иллюзии)
+
+```{r}
+# компилируем модели, соответствующие двум гипотезам
+stanmodelH0_2 <- stan_model('H0_2.stan', model_name = 'H0') 
+stanmodelH1_2 <- stan_model('H1_2.stan', model_name = 'H1')
+
+# сэмплируем "предсказания" каждой из гипотез (моделей), нужно сгенерировать очень много 
+fit_H0_2 <- sampling(stanmodelH0_2, list_for_stan, iter = 20000, warmup = 1000)
+fit_H1_2 <- sampling(stanmodelH1_2, list_for_stan, iter = 20000, warmup = 1000)
+```
+
+```{r}
+print(fit_H0_2)
+print(fit_H1_2)
+```
+
+## Диагностика
+
+```{r}
+posterior_H0_2 <- ggs(fit_H0_2)
+posterior_H1_2 <- ggs(fit_H1_2)
+
+ggmcmc(D = posterior_H0_2, file = NULL, family = 'beta_mu', plot = 'ggs_histogram')
+ggmcmc(D = posterior_H1_2, file = NULL, family = 'beta_mu', plot = 'ggs_histogram')
+
+ggmcmc(D = posterior_H0_2, file = NULL, family = 'beta_mu', plot = 'ggs_compare_partial')
+ggmcmc(D = posterior_H1_2, file = NULL, family = 'beta_mu', plot = 'ggs_compare_partial')
+
+ggmcmc(D = posterior_H0_2, file = NULL, family = 'beta_mu', plot = 'ggs_traceplot')
+ggmcmc(D = posterior_H1_2, file = NULL, family = 'beta_mu', plot = 'ggs_traceplot')
+
+ggmcmc(D = posterior_H0_2, file = NULL, family = 'beta_mu', plot = 'ggs_autocorrelation')
+ggmcmc(D = posterior_H1_2, file = NULL, family = 'beta_mu', plot = 'ggs_autocorrelation')
+```
+
+## Байес-фактор
+
+```{r}
+# считаем логарифм правдоподобия имеющихся данных для каждой из гипотез (моделей)
+H0_res_2 <- bridge_sampler(fit_H0_2, silent = TRUE)
+H1_res_2 <- bridge_sampler(fit_H1_2, silent = TRUE)
+print(H0_res_2)
+print(H1_res_2)
+```
+
+
+```{r}
+# смотрим на оценку возможной ошибки подсчета правдоподобия
+error_measures(H0_res_2)$percentage
+error_measures(H1_res_2)$percentage
+```
+
+Предполагаем, что обе гипотезы одинаково вероятны (имеют одинаковую априорную вероятность)
+
+```{r}
+# считаем Байес-фактор (в пользу альтернативной гипотезы)
+BF10_2 <- bf(H1_res_2, H0_res_2)
+print(BF10_2)
+
+# считаем Байес-фактор (в пользу нулевой гипотезы)
+BF01_2 <- bf(H0_res_2, H1_res_2)
+print(BF01_2)
+```
+
+
+## Проверка гипотезы о взаимодействии двух факторов
+
+```{r}
+# компилируем модели, соответствующие двум гипотезам
+stanmodelH0_3 <- stan_model('H0_3.stan', model_name = 'H0') 
+stanmodelH1_3 <- stan_model('H1_3.stan', model_name = 'H1')
+
+# сэмплируем "предсказания" каждой из гипотез (моделей), нужно сгенерировать очень много 
+fit_H0_3 <- sampling(stanmodelH0_3, list_for_stan, iter = 20000, warmup = 1000)
+fit_H1_3 <- sampling(stanmodelH1_3, list_for_stan, iter = 20000, warmup = 1000)
+```
+
+## Диагностика
+
+```{r}
+posterior_H0_3 <- ggs(fit_H0_3)
+posterior_H1_3 <- ggs(fit_H1_3)
+
+ggmcmc(D = posterior_H0_3, file = NULL, family = 'beta_mu', plot = 'ggs_histogram')
+ggmcmc(D = posterior_H1_3, file = NULL, family = 'beta_mu', plot = 'ggs_histogram')
+
+ggmcmc(D = posterior_H0_3, file = NULL, family = 'beta_mu', plot = 'ggs_compare_partial')
+ggmcmc(D = posterior_H1_3, file = NULL, family = 'beta_mu', plot = 'ggs_compare_partial')
+
+ggmcmc(D = posterior_H0_3, file = NULL, family = 'beta_mu', plot = 'ggs_traceplot')
+ggmcmc(D = posterior_H1_3, file = NULL, family = 'beta_mu', plot = 'ggs_traceplot')
+
+ggmcmc(D = posterior_H0_3, file = NULL, family = 'beta_mu', plot = 'ggs_autocorrelation')
+ggmcmc(D = posterior_H1_3, file = NULL, family = 'beta_mu', plot = 'ggs_autocorrelation')
+```
+
+## Байес-фактор
+
+```{r}
+# считаем логарифм правдоподобия имеющихся данных для каждой из гипотез (моделей)
+H0_res_3 <- bridge_sampler(fit_H0_3, silent = TRUE)
+H1_res_3 <- bridge_sampler(fit_H1_3, silent = TRUE)
+print(H0_res_3)
+print(H1_res_3)
+```
+
+
+```{r}
+# смотрим на оценку возможной ошибки подсчета правдоподобия
+error_measures(H0_res_3)$percentage
+error_measures(H1_res_3)$percentage
+```
+
+Предполагаем, что обе гипотезы одинаково вероятны (имеют одинаковую априорную вероятность)
+
+```{r}
+# считаем Байес-фактор (в пользу альтернативной гипотезы)
+BF10_3 <- bf(H1_res_3, H0_res_3)
+print(BF10_3)
+
+# считаем Байес-фактор (в пользу нулевой гипотезы)
+BF01_3 <- bf(H0_res_3, H1_res_3)
+print(BF01_3)
+```
