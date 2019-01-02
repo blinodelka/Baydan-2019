@@ -26,17 +26,17 @@ data_1 <- list(N = length(test_scores), X = test_scores)
 H0 <-
 '
 data {
-  int<lower = 0> N;  // sample size
-  vector[N] X;
+  int<lower = 0> N;  // размер выборки
+  vector[N] X; // вектор наблюдений
 }
 
 parameters {
-  real<lower = 0> sigma;
+  real<lower = 0> sigma; // оцениваемый параметр: стандартное отклонение нормального распределения
 }
 
 model {
-  target += cauchy_lpdf(sigma | 0,15);
-  target += normal_lpdf(X | 100, sigma);
+  target += cauchy_lpdf(sigma | 0,15); // априорное распределение стандартного отклонения
+  target += normal_lpdf(X | 100, sigma); // функция правдоподобия
 }
 '
 ```
@@ -47,19 +47,19 @@ model {
 H1 <-
 '
 data {
-  int<lower = 0> N;  // sample size
-  vector[N] X;
+  int<lower = 0> N;  // размер выборки
+  vector[N] X; // вектор наблюдений
 }
 
 parameters {
-  real<lower = 0, upper = 200> mu;
-  real<lower = 0> sigma;
+  real<lower = 0, upper = 200> mu; // оцениваемый параметр: среднее нормального распределения
+  real<lower = 0> sigma; // оцениваемый параметр: стандартное отклонение нормального распределения
 }
 
 model {
-  target += uniform_lpdf(mu | 0,200);
-  target += cauchy_lpdf(sigma | 0,15);
-  target += normal_lpdf(X | mu, sigma);
+  target += uniform_lpdf(mu | 0,200); // априорное распределение среднего
+  target += cauchy_lpdf(sigma | 0,15); // априорное распределение стандартного отклонения
+  target += normal_lpdf(X | mu, sigma); // функция правдоподобия
 }
 '
 ```
@@ -102,7 +102,7 @@ set.seed(100)
 
 N <- 50
 true_mu <- 100
-# true_sigma <- 125
+
 test_scores <- rnorm(N, true_mu, 15)
 data_2 <- list(N = length(test_scores), X = test_scores)
 ```
