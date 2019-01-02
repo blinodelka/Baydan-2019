@@ -1,7 +1,7 @@
 # Baydan_2019
 ## Winter School on Bayesian Statistics 2019
 
-Materials for bayesian analysis practice with RStan
+Materials for Bayesian data analysis practice with RStan
 
 ### Main topics:
 
