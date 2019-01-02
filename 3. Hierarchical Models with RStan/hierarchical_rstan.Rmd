@@ -65,34 +65,34 @@ data_1 = list(
 model_1 <-
 '
 data {
-	int<lower=1> nY; # количество наблюдений (всего)
-	int<lower=1> nS; # количество испытуемых
-	int<lower=1,upper=nS> Subj[nY]; # вектор с номерами испытуемых
-	vector[nY] cond; # условие
-	vector[nY] Y; # вектор наблюдений
+	int<lower=1> nY; // количество наблюдений (всего)
+	int<lower=1> nS; // количество испытуемых
+	int<lower=1,upper=nS> Subj[nY]; // вектор с номерами испытуемых
+	vector[nY] cond; // условие
+	vector[nY] Y; // вектор наблюдений
 }
 
 parameters {
-	real<lower=0> sigma; # стандартное отклонение (шум) измерения, одинаковое для всех испытуемых 
-	real intercept; # среднее смещение по всем испытуемым
-	real<lower=0> intercept_sd ; # стандартное отклонение (вариация) смещения среди испытуемых
-  real effect; # размер эффекта
-	vector[nS] Sintercept ; # переменная, чтобы сохранять смещение для каждого из испытуемых
+	real<lower=0> sigma; // стандартное отклонение (шум) измерения, одинаковое для всех испытуемых 
+	real intercept_mu; // среднее смещение по всем испытуемым
+	real<lower=0> intercept_sd ; // стандартное отклонение (вариация) смещения среди испытуемых
+  real effect; // размер эффекта 
+	vector[nS] intercept ; // переменная, чтобы сохранять смещение для каждого из испытуемых
 }
 
 model {
-	# априорные распределения
-	sigma ~ cauchy(0,20);
-	intercept ~ normal(5,10);
+	// априорные распределения
+	sigma ~ cauchy(0,3);
+	intercept_mu ~ normal(5,10);
+  intercept_sd ~ cauchy(0,3);
 	effect ~ normal(0,10);
-	intercept_sd ~ cauchy(0,20);
 
-	# определить, "откуда" (из какого распределения по популяции) генерировались индивидуальные смещения 
-	Sintercept ~ normal(intercept,intercept_sd);
+	// "откуда" (из какого распределения по популяции) генерировались индивидуальные смещения 
+	intercept ~ normal(intercept_mu,intercept_sd);
 
-	# генерация наблюдений с учетом индивидуального смещения и условия
+	// генерация наблюдений с учетом индивидуального смещения и условия
 	for(i in 1:nY){
-		Y[i] ~ normal(Sintercept[Subj[i]] + effect*cond[i] , sigma) ;
+		Y[i] ~ normal(intercept[Subj[i]] + effect*cond[i] , sigma) ;
 	}
 
 }
@@ -171,39 +171,40 @@ data_2 = list(
 
 ## Модель 2
 
-Оценка размера эффекта с учетом индивидуальных смещений
+Оценка размера эффекта с учетом индивидуальных смещений и индивидуального смещения
 
 ```{r}
 model_2 <-
 '
 data {
-	int<lower=1> nY ; # num trials
-	int<lower=1> nS ; # num subjects
-	int<lower=1,upper=nS> Subj[nY] ; 
-	vector[nY] cond; # contrast for trial
-	vector[nY] Y ; # outcomes
+	int<lower=1> nY; // количество наблюдений (всего)
+	int<lower=1> nS; // количество испытуемых
+	int<lower=1,upper=nS> Subj[nY]; // вектор с номерами испытуемых
+	vector[nY] cond; // условие (воздействие - нет воздействия)
+	vector[nY] Y; // результат
 }
 parameters {
-	real<lower=0> sigma ; 
-	real intercept ; 
-	real effect ; 
-	real<lower=0> intercept_sd ; 
-	real<lower=0> effect_sd ;
-	vector[nS] Sintercept ; 
-	vector[nS] Seffect ; 
+	real<lower=0> sigma; // общий шум наблюдений
+	real intercept_mu; // среднее смещение по популяции
+	real effect_mu; // средний размер эффекта по популяции
+	real<lower=0> intercept_sd; // вариативность смещения по популяции
+	real<lower=0> effect_sd; // вариативность размера эффекта по популяции
+	vector[nS] intercept; // вектор индивидуальных смещений
+	vector[nS] effect; // вектор индивидуальных размеров эффекта
 }
 model {
-	sigma ~ cauchy(0,20) ;
-	intercept ~ normal(5,10) ;
-	effect ~ normal(0,10) ;
-	intercept_sd ~ cauchy(0,20) ;
-	effect_sd ~ cauchy(0,20) ;
+  // априорные распределения
+	sigma ~ cauchy(0,3);
+	intercept_mu ~ normal(5,10);
+	effect_mu ~ normal(0,10);
+	intercept_sd ~ cauchy(0,3);
+	effect_sd ~ cauchy(0,3);
 
-	Sintercept ~ normal(intercept,intercept_sd) ;
-	Seffect ~ normal(effect,effect_sd);
+	intercept ~ normal(intercept_mu,intercept_sd); // распределение индивидуальных смещений
+	effect ~ normal(effect_mu,effect_sd); // распределение индивидуальных размеров эффекта
 
 	for(i in 1:nY){
-		Y[i] ~ normal(Sintercept[Subj[i]] + Seffect[Subj[i]]*cond[i] , sigma) ;
+		Y[i] ~ normal(intercept[Subj[i]] + effect[Subj[i]]*cond[i], sigma); // правдоподобие наблюдений с учетом индивидуальных смещений и размеров эффекта
 	}
 
 }

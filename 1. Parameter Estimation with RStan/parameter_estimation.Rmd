@@ -53,9 +53,8 @@ model {
 
 ## Генерация апостериорного распределения
 
-
 ```{r}
-fit_1 <- stan(model_code = model_1, data = data_1, chains = 1, iter = 5000, warmup = 1000) # ! нужно всегда использовать несколько цепей для диагностики результата
+fit_1 <- stan(model_code = model_1, data = data_1, chains = 3, iter = 5000, warmup = 1000) # ! необходимо использовать несколько цепей для диагностики результата
 ```
 
 ## Диагностика!!!
@@ -86,37 +85,37 @@ ggmcmc(D = posterior_mu, file = NULL, plot = 'ggs_compare_partial') # полно
 ggmcmc(D = posterior_mu, file = NULL, plot = 'ggs_autocorrelation') # в идеале: все значения после 1 на нуле или очень близки к нулю
 ```
 
-Проверка с несколькими цепями
+Проверка схождения нескольких цепей к одинаковым значениям!
 
-Анализ чувствительности к априорному распределению: проверка получения того же результата с использованием разных априорных распределений. В противном случае, необходимо доказать необходимость использования конкретного выбранного априорного распределения.
+Анализ чувствительности к априорному распределению: проверка получения того же результата с использованием разных априорных распределений. В противном случае, необходимо доказать необходимость использования выбранного распределения.
 
 ## Модель 2
 
-Необходимо оценить и среднее, и стандартное отклонение
+Необходимо оценить и среднее, и стандартное отклонение.
 
 ```{r}
 model_2 <-
 '
 data {
-  int<lower = 0> N;  // sample size
-  vector[N] X;
+  int<lower = 0> N;  // размер выборки (больше 0)
+  vector[N] X; // наблюдения - вектор длины N
 }
 
 parameters {
-  real<lower = 0> mu;
-  real<lower = 0> sigma;
+  real<lower = 0> mu; // среднее нормального распределения, которое необходимо оценить
+  real<lower = 0> sigma; // стандартное отклонение нормального распределения, которое необходимо оценить
 }
 
 model {
-  mu ~ normal(100, 25);
-  sigma ~ cauchy(0,15);
-  X ~ normal(mu, sigma);
+  mu ~ normal(100, 25); // априорное распределение среднего
+  sigma ~ cauchy(0,3); // априорное распределение стандартного отклонения
+  X ~ normal(mu, sigma); // функция правдоподобия
 }
 '
 ```
 
 ```{r}
-fit_2 <- stan(model_code = model_2, data = data_1, chains = 1, iter = 5000, warmup = 1000)
+fit_2 <- stan(model_code = model_2, data = data_1, chains = 3, iter = 5000, warmup = 1000)
 ```
 
 ```{r}
@@ -128,6 +127,11 @@ posterior_fit_2 <- ggs(fit_2)
 mean(posterior_fit_2$value > 90 & posterior_fit_2$Parameter == "mu")/mean(posterior_fit_2$Parameter == "mu")
 
 ggmcmc(D = posterior_fit_2, file = NULL, plot = 'ggs_histogram')
+```
+
+Диагностика
+
+```{r}
 ggmcmc(D = posterior_fit_2, file = NULL, plot = 'ggs_traceplot') 
 ggmcmc(D = posterior_fit_2, file = NULL, plot = 'ggs_compare_partial') 
 ggmcmc(D = posterior_fit_2, file = NULL, plot = 'ggs_autocorrelation')

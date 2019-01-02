@@ -1,7 +1,9 @@
 ---
 title: "Регрессионная модель в RStan"
 author: "Марина Дубова"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r}
@@ -34,23 +36,23 @@ data_1 <- list(X = X, Y = Y, N = sample_size)
 model_1 <-
 '
 data {
-  int<lower = 0> N;  // sample size
-  vector[N] X;
-  vector[N] Y;
+  int<lower = 0> N;  // размер выборки
+  vector[N] X; // вектор с предиктор
+  vector[N] Y; // вектор с целевой переменной
 }
 
 parameters {
-  real intercept;
-  real slope;
-  real<lower = 0> sigma;
+  real intercept; // смещение
+  real slope; // угол наклона регрессионной прямой (эффект предиктора на целевую переменную)
+  real<lower = 0> sigma; // шум наблюдений
 }
 
 model {
-  intercept ~ normal(0, 10);
-  slope ~ normal(0, 1);
-  sigma ~ cauchy(0, 10);
+  intercept ~ normal(0, 10); // априорное распределение смещения
+  slope ~ normal(0, 1); // априорное распределение угла наклона
+  sigma ~ cauchy(0, 3); // априорное распределение шума наблюдения
   for(i in 1:N) {
-    Y[i] ~ normal(intercept + slope * X[i], sigma);
+    Y[i] ~ normal(intercept + slope * X[i], sigma); // функция правдоподобия
   }
 }
 '
@@ -76,36 +78,36 @@ ggmcmc(D = posterior_1, file = NULL, plot = 'ggs_autocorrelation')
 
 Проверка апостериорного распределения: предсказывает ли модель реально полученные данные (Y)?
 
-Адаптация модели для генерации Y
+Адаптация модели для генерации предсказаний Y
 
 ```{r}
 model_2 <-
 '
 data {
-  int<lower = 0> N;  // sample size
-  vector[N] X;
-  vector[N] Y;
+  int<lower = 0> N;  // размер выборки
+  vector[N] X; // вектор с предиктор
+  vector[N] Y; // вектор с целевой переменной
 }
 
 parameters {
-  real intercept;
-  real slope;
-  real<lower = 0> sigma;
+  real intercept; // смещение
+  real slope; // угол наклона регрессионной прямой (эффект предиктора на целевую переменную)
+  real<lower = 0> sigma; // шум наблюдений
 }
 
 model {
-  intercept ~ normal(0, 10);
-  slope ~ normal(0, 1);
-  sigma ~ cauchy(0, 10);
+  intercept ~ normal(0, 10); // априорное распределение смещения
+  slope ~ normal(0, 1); // априорное распределение угла наклона
+  sigma ~ cauchy(0, 3); // априорное распределение шума наблюдения
   for(i in 1:N) {
-    Y[i] ~ normal(intercept + slope * X[i], sigma);
+    Y[i] ~ normal(intercept + slope * X[i], sigma); // функция правдоподобия
   }
 }
 
 generated quantities {
-  vector[N] Y_hat;
+  vector[N] Y_hat; 
   for(i in 1:N) {
-    Y_hat[i] = normal_rng(intercept + slope * X[i], sigma);
+    Y_hat[i] = normal_rng(intercept + slope * X[i], sigma); // генерация предсказаний целевой переменной исходя из оценок параметров
   }
 }
 '
