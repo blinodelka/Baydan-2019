@@ -241,131 +241,101 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyc3RhbilcbmxpYnJhcnkoZ2dtY21jKVxubGlicmFyeShiYXllc3Bsb3QpXG5saWJyYXJ5KGJyaWRnZXNhbXBsaW5nKVxuYGBgIn0= -->
-<pre class="r"><code>library(rstan)
-library(ggmcmc)
-library(bayesplot)
-library(bridgesampling)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubGlicmFyeShyc3RhbilcbmxpYnJhcnkoZ2dtY21jKVxubGlicmFyeShiYXllc3Bsb3QpXG5saWJyYXJ5KGJyaWRnZXNhbXBsaW5nKVxuYGBgXG5gYGAifQ== -->
+<p><code>r</code>r library(rstan) library(ggmcmc) library(bayesplot) library(bridgesampling)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG9hZChcImRhdGFfZm9yX3N0YW4uUkRhdGFcIilcbmxpc3RfZm9yX3N0YW4gPC0gbGlzdChuWSA9IG5yb3coZGF0YV9mb3Jfc3RhbiksIG5TID0gbWF4KGRhdGFfZm9yX3N0YW4kcGFydGljaXBhbnQpLCBTdWJqID0gZGF0YV9mb3Jfc3RhbiRwYXJ0aWNpcGFudCwgc2l6ZV9kaWZmID0gZGF0YV9mb3Jfc3RhbiRzaXplLCBudW1fb2ZfdHJpYWxzID0gZGF0YV9mb3Jfc3RhbiRudW1iZXJfb2ZfZml4YXRpb25hbF90cmlhbHMsIFkgPSBkYXRhX2Zvcl9zdGFuJGFuc3dlci5rZXlzKVxuYGBgIn0= -->
-<pre class="r"><code>load(&quot;data_for_stan.RData&quot;)
-list_for_stan &lt;- list(nY = nrow(data_for_stan), nS = max(data_for_stan$participant), Subj = data_for_stan$participant, size_diff = data_for_stan$size, num_of_trials = data_for_stan$number_of_fixational_trials, Y = data_for_stan$answer.keys)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="-------" class="section level2">
 <h2>Оценка связи типа иллюзии и разницы между стимулами</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0XzEgPC0gc3RhbihcImJheWVzX21vZGVsXzEuc3RhblwiLCBkYXRhID0gbGlzdF9mb3Jfc3RhbiwgaXRlciA9IDYwMDAsIHdhcm11cCA9IDIwMDApXG5gYGAifQ== -->
-<pre class="r"><code>fit_1 &lt;- stan(&quot;bayes_model_1.stan&quot;, data = list_for_stan, iter = 6000, warmup = 2000)</code></pre>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucHJpbnQoZml0XzEpXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r print(fit_1)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZml0XzEpXG5gYGAifQ== -->
-<pre class="r"><code>print(fit_1)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9zdGVyaW9yXzEgPC0gYXMuYXJyYXkoZml0XzEpXG5tY21jX2FyZWFzKHBvc3Rlcmlvcl8xLCByZWdleF9wYXJzID0gYyhcImJldGFcIiksIHByb2IgPSAwLjgsIHByb2Jfb3V0ZXIgPSAwLjk1LCBwb2ludF9lc3QgPSBcIm1lYW5cIilcbmBgYCJ9 -->
-<pre class="r"><code>posterior_1 &lt;- as.array(fit_1)
-mcmc_areas(posterior_1, regex_pars = c(&quot;beta&quot;), prob = 0.8, prob_outer = 0.95, point_est = &quot;mean&quot;)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Диагностика</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9zdGVyaW9yXzFiIDwtIGdncyhmaXRfMSlcbmdnbWNtYyhEID0gcG9zdGVyaW9yXzFiLCBmaWxlID0gTlVMTCwgcGxvdCA9ICdnZ3NfdHJhY2VwbG90JykgXG5nZ21jbWMoRCA9IHBvc3Rlcmlvcl8xYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2NvbXBhcmVfcGFydGlhbCcpIFxuZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMWIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19hdXRvY29ycmVsYXRpb24nKSBcbmBgYCJ9 -->
-<pre class="r"><code>posterior_1b &lt;- ggs(fit_1)
-ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_traceplot') 
-ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_compare_partial') 
-ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_autocorrelation') </code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="-------" class="section level2">
-<h2>Оценка связи типа иллюзии и количеством установочных проб</h2>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0XzIgPC0gc3RhbihcImJheWVzX21vZGVsXzIuc3RhblwiLCBkYXRhID0gbGlzdF9mb3Jfc3RhbiwgaXRlciA9IDYwMDAsIHdhcm11cCA9IDIwMDApXG5gYGAifQ== -->
-<pre class="r"><code>fit_2 &lt;- stan(&quot;bayes_model_2.stan&quot;, data = list_for_stan, iter = 6000, warmup = 2000)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZml0XzIpXG5gYGAifQ== -->
-<pre class="r"><code>print(fit_2)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9zdGVyaW9yXzIgPC0gYXMuYXJyYXkoZml0XzIpXG5tY21jX2FyZWFzKHBvc3Rlcmlvcl8yLCByZWdleF9wYXJzID0gYyhcImJldGFcIiksIHByb2IgPSAwLjgsIHByb2Jfb3V0ZXIgPSAwLjk1LCBwb2ludF9lc3QgPSBcIm1lYW5cIilcbmBgYCJ9 -->
-<pre class="r"><code>posterior_2 &lt;- as.array(fit_2)
-mcmc_areas(posterior_2, regex_pars = c(&quot;beta&quot;), prob = 0.8, prob_outer = 0.95, point_est = &quot;mean&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Диагностика</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9zdGVyaW9yXzJiIDwtIGdncyhmaXRfMilcbmdnbWNtYyhEID0gcG9zdGVyaW9yXzJiLCBmaWxlID0gTlVMTCwgcGxvdCA9ICdnZ3NfdHJhY2VwbG90JykgXG5nZ21jbWMoRCA9IHBvc3Rlcmlvcl8yYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2NvbXBhcmVfcGFydGlhbCcpIFxuZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMmIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19hdXRvY29ycmVsYXRpb24nKSBcbmBgYCJ9 -->
-<pre class="r"><code>posterior_2b &lt;- ggs(fit_2)
-ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_traceplot') 
-ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_compare_partial') 
-ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_autocorrelation') </code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucG9zdGVyaW9yXzFiIDwtIGdncyhmaXRfMSlcbmdnbWNtYyhEID0gcG9zdGVyaW9yXzFiLCBmaWxlID0gTlVMTCwgcGxvdCA9ICdnZ3NfdHJhY2VwbG90JykgXG5nZ21jbWMoRCA9IHBvc3Rlcmlvcl8xYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2NvbXBhcmVfcGFydGlhbCcpIFxuZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMWIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19hdXRvY29ycmVsYXRpb24nKSBcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r posterior_1b &lt;- ggs(fit_1) ggmcmc(D = posterior_1b, file = NULL, plot = ‘ggs_traceplot’) ggmcmc(D = posterior_1b, file = NULL, plot = ‘ggs_compare_partial’) ggmcmc(D = posterior_1b, file = NULL, plot = ‘ggs_autocorrelation’)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 <div id="---" class="section level2">
-<h2>Оценка взаимодействия двух факторов</h2>
+<h2>Модель с индивидуальными смещениями</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0XzMgPC0gc3RhbihcImJheWVzX21vZGVsXzMuc3RhblwiLCBkYXRhID0gbGlzdF9mb3Jfc3RhbiwgaXRlciA9IDYwMDAsIHdhcm11cCA9IDIwMDApXG5gYGAifQ== -->
-<pre class="r"><code>fit_3 &lt;- stan(&quot;bayes_model_3.stan&quot;, data = list_for_stan, iter = 6000, warmup = 2000)</code></pre>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucHJpbnQoZml0XzIpXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r print(fit_2)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZml0XzMpXG5gYGAifQ== -->
-<pre class="r"><code>print(fit_3)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9zdGVyaW9yXzMgPC0gYXMuYXJyYXkoZml0XzMpXG5tY21jX2FyZWFzKHBvc3Rlcmlvcl8zLCByZWdleF9wYXJzID0gYyhcImJldGFcIiksIHByb2IgPSAwLjgsIHByb2Jfb3V0ZXIgPSAwLjk1LCBwb2ludF9lc3QgPSBcIm1lYW5cIilcbmBgYCJ9 -->
-<pre class="r"><code>posterior_3 &lt;- as.array(fit_3)
-mcmc_areas(posterior_3, regex_pars = c(&quot;beta&quot;), prob = 0.8, prob_outer = 0.95, point_est = &quot;mean&quot;)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Диагностика</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9zdGVyaW9yXzNiIDwtIGdncyhmaXRfMylcbmdnbWNtYyhEID0gcG9zdGVyaW9yXzNiLCBmaWxlID0gTlVMTCwgcGxvdCA9ICdnZ3NfdHJhY2VwbG90JykgXG5nZ21jbWMoRCA9IHBvc3Rlcmlvcl8zYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2NvbXBhcmVfcGFydGlhbCcpIFxuZ2dtY21jKEQgPSBwb3N0ZXJpb3JfM2IsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19hdXRvY29ycmVsYXRpb24nKSBcbmBgYCJ9 -->
-<pre class="r"><code>posterior_3b &lt;- ggs(fit_3)
-ggmcmc(D = posterior_3b, file = NULL, plot = 'ggs_traceplot') 
-ggmcmc(D = posterior_3b, file = NULL, plot = 'ggs_compare_partial') 
-ggmcmc(D = posterior_3b, file = NULL, plot = 'ggs_autocorrelation') </code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucG9zdGVyaW9yXzJiIDwtIGdncyhmaXRfMilcbmdnbWNtYyhEID0gcG9zdGVyaW9yXzJiLCBmaWxlID0gTlVMTCwgcGxvdCA9ICdnZ3NfdHJhY2VwbG90JykgXG5nZ21jbWMoRCA9IHBvc3Rlcmlvcl8yYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2NvbXBhcmVfcGFydGlhbCcpIFxuZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMmIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19hdXRvY29ycmVsYXRpb24nKSBcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r posterior_2b &lt;- ggs(fit_2) ggmcmc(D = posterior_2b, file = NULL, plot = ‘ggs_traceplot’) ggmcmc(D = posterior_2b, file = NULL, plot = ‘ggs_compare_partial’) ggmcmc(D = posterior_2b, file = NULL, plot = ‘ggs_autocorrelation’)</p>
+<pre><code></code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="-------" class="section level2">
+<h2>Модель с индивидуальными смещениями и индивидуальными размерами эффекта</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucHJpbnQoZml0XzMpXG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r print(fit_3)</p>
+<pre><code></code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Диагностика</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucG9zdGVyaW9yXzNiIDwtIGdncyhmaXRfMylcbmdnbWNtYyhEID0gcG9zdGVyaW9yXzNiLCBmaWxlID0gTlVMTCwgcGxvdCA9ICdnZ3NfdHJhY2VwbG90JykgXG5nZ21jbWMoRCA9IHBvc3Rlcmlvcl8zYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2NvbXBhcmVfcGFydGlhbCcpIFxuZ2dtY21jKEQgPSBwb3N0ZXJpb3JfM2IsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19hdXRvY29ycmVsYXRpb24nKSBcbmBgYFxuYGBgIn0= -->
+<p><code>r</code>r posterior_3b &lt;- ggs(fit_3) ggmcmc(D = posterior_3b, file = NULL, plot = ‘ggs_traceplot’) ggmcmc(D = posterior_3b, file = NULL, plot = ‘ggs_compare_partial’) ggmcmc(D = posterior_3b, file = NULL, plot = ‘ggs_autocorrelation’)</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQmF5ZXNpYW4gQW5hbHlzaXMiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCmBgYHtyfQpsaWJyYXJ5KHJzdGFuKQpsaWJyYXJ5KGdnbWNtYykKbGlicmFyeShiYXllc3Bsb3QpCmxpYnJhcnkoYnJpZGdlc2FtcGxpbmcpCmBgYAoKYGBge3J9CmxvYWQoImRhdGFfZm9yX3N0YW4uUkRhdGEiKQpsaXN0X2Zvcl9zdGFuIDwtIGxpc3QoblkgPSBucm93KGRhdGFfZm9yX3N0YW4pLCBuUyA9IG1heChkYXRhX2Zvcl9zdGFuJHBhcnRpY2lwYW50KSwgU3ViaiA9IGRhdGFfZm9yX3N0YW4kcGFydGljaXBhbnQsIHNpemVfZGlmZiA9IGRhdGFfZm9yX3N0YW4kc2l6ZSwgbnVtX29mX3RyaWFscyA9IGRhdGFfZm9yX3N0YW4kbnVtYmVyX29mX2ZpeGF0aW9uYWxfdHJpYWxzLCBZID0gZGF0YV9mb3Jfc3RhbiRhbnN3ZXIua2V5cykKYGBgCgojIyDQntGG0LXQvdC60LAg0YHQstGP0LfQuCDRgtC40L/QsCDQuNC70LvRjtC30LjQuCDQuCDRgNCw0LfQvdC40YbRiyDQvNC10LbQtNGDINGB0YLQuNC80YPQu9Cw0LzQuCAKCmBgYHtyfQpmaXRfMSA8LSBzdGFuKCJiYXllc19tb2RlbF8xLnN0YW4iLCBkYXRhID0gbGlzdF9mb3Jfc3RhbiwgaXRlciA9IDYwMDAsIHdhcm11cCA9IDIwMDApCmBgYAoKYGBge3J9CnByaW50KGZpdF8xKQpgYGAKCmBgYHtyfQpwb3N0ZXJpb3JfMSA8LSBhcy5hcnJheShmaXRfMSkKbWNtY19hcmVhcyhwb3N0ZXJpb3JfMSwgcmVnZXhfcGFycyA9IGMoImJldGEiKSwgcHJvYiA9IDAuOCwgcHJvYl9vdXRlciA9IDAuOTUsIHBvaW50X2VzdCA9ICJtZWFuIikKYGBgCgrQlNC40LDQs9C90L7RgdGC0LjQutCwCgpgYGB7cn0KcG9zdGVyaW9yXzFiIDwtIGdncyhmaXRfMSkKZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMWIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc190cmFjZXBsb3QnKSAKZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMWIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19jb21wYXJlX3BhcnRpYWwnKSAKZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMWIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19hdXRvY29ycmVsYXRpb24nKSAKYGBgCgoKIyMg0J7RhtC10L3QutCwINGB0LLRj9C30Lgg0YLQuNC/0LAg0LjQu9C70Y7Qt9C40Lgg0Lgg0LrQvtC70LjRh9C10YHRgtCy0L7QvCDRg9GB0YLQsNC90L7QstC+0YfQvdGL0YUg0L/RgNC+0LEKCmBgYHtyfQpmaXRfMiA8LSBzdGFuKCJiYXllc19tb2RlbF8yLnN0YW4iLCBkYXRhID0gbGlzdF9mb3Jfc3RhbiwgaXRlciA9IDYwMDAsIHdhcm11cCA9IDIwMDApCmBgYAoKCmBgYHtyfQpwcmludChmaXRfMikKYGBgCgoKYGBge3J9CnBvc3Rlcmlvcl8yIDwtIGFzLmFycmF5KGZpdF8yKQptY21jX2FyZWFzKHBvc3Rlcmlvcl8yLCByZWdleF9wYXJzID0gYygiYmV0YSIpLCBwcm9iID0gMC44LCBwcm9iX291dGVyID0gMC45NSwgcG9pbnRfZXN0ID0gIm1lYW4iKQpgYGAKCtCU0LjQsNCz0L3QvtGB0YLQuNC60LAKCmBgYHtyfQpwb3N0ZXJpb3JfMmIgPC0gZ2dzKGZpdF8yKQpnZ21jbWMoRCA9IHBvc3Rlcmlvcl8yYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX3RyYWNlcGxvdCcpIApnZ21jbWMoRCA9IHBvc3Rlcmlvcl8yYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2NvbXBhcmVfcGFydGlhbCcpIApnZ21jbWMoRCA9IHBvc3Rlcmlvcl8yYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2F1dG9jb3JyZWxhdGlvbicpIApgYGAKCiMjINCe0YbQtdC90LrQsCDQstC30LDQuNC80L7QtNC10LnRgdGC0LLQuNGPINC00LLRg9GFINGE0LDQutGC0L7RgNC+0LIKCmBgYHtyfQpmaXRfMyA8LSBzdGFuKCJiYXllc19tb2RlbF8zLnN0YW4iLCBkYXRhID0gbGlzdF9mb3Jfc3RhbiwgaXRlciA9IDYwMDAsIHdhcm11cCA9IDIwMDApCmBgYAoKYGBge3J9CnByaW50KGZpdF8zKQpgYGAKCmBgYHtyfQpwb3N0ZXJpb3JfMyA8LSBhcy5hcnJheShmaXRfMykKbWNtY19hcmVhcyhwb3N0ZXJpb3JfMywgcmVnZXhfcGFycyA9IGMoImJldGEiKSwgcHJvYiA9IDAuOCwgcHJvYl9vdXRlciA9IDAuOTUsIHBvaW50X2VzdCA9ICJtZWFuIikKYGBgCgrQlNC40LDQs9C90L7RgdGC0LjQutCwCgpgYGB7cn0KcG9zdGVyaW9yXzNiIDwtIGdncyhmaXRfMykKZ2dtY21jKEQgPSBwb3N0ZXJpb3JfM2IsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc190cmFjZXBsb3QnKSAKZ2dtY21jKEQgPSBwb3N0ZXJpb3JfM2IsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19jb21wYXJlX3BhcnRpYWwnKSAKZ2dtY21jKEQgPSBwb3N0ZXJpb3JfM2IsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19hdXRvY29ycmVsYXRpb24nKSAKYGBgCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQmF5ZXNpYW4gQW5hbHlzaXMiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCmBgYHtyfQpsaWJyYXJ5KHJzdGFuKQpsaWJyYXJ5KGdnbWNtYykKbGlicmFyeShiYXllc3Bsb3QpCmxpYnJhcnkoYnJpZGdlc2FtcGxpbmcpCmBgYAoKYGBge3J9CmxvYWQoImRhdGFfZm9yX3N0YW4uUkRhdGEiKQpsaXN0X2Zvcl9zdGFuIDwtIGxpc3QoblkgPSBucm93KGRhdGFfZm9yX3N0YW4pLCBuUyA9IG1heChkYXRhX2Zvcl9zdGFuJHBhcnRpY2lwYW50KSwgU3ViaiA9IGRhdGFfZm9yX3N0YW4kcGFydGljaXBhbnQsIHNpemVfZGlmZiA9IGRhdGFfZm9yX3N0YW4kc2l6ZSwgbnVtX29mX3RyaWFscyA9IGRhdGFfZm9yX3N0YW4kbnVtYmVyX29mX2ZpeGF0aW9uYWxfdHJpYWxzLCBZID0gZGF0YV9mb3Jfc3RhbiRhbnN3ZXIua2V5cykKYGBgCgojIyDQntGG0LXQvdC60LAg0YHQstGP0LfQuCDRgtC40L/QsCDQuNC70LvRjtC30LjQuCDQuCDRgNCw0LfQvdC40YbRiyDQvNC10LbQtNGDINGB0YLQuNC80YPQu9Cw0LzQuCAKCmBgYHtyfQpmaXRfMSA8LSBzdGFuKCJiYXllc19tb2RlbF8xLnN0YW4iLCBkYXRhID0gbGlzdF9mb3Jfc3RhbiwgaXRlciA9IDYwMDAsIHdhcm11cCA9IDIwMDApCmBgYAoKYGBge3J9CnByaW50KGZpdF8xKQpgYGAKCmBgYHtyfQpwb3N0ZXJpb3JfMSA8LSBhcy5hcnJheShmaXRfMSkKbWNtY19hcmVhcyhwb3N0ZXJpb3JfMSwgcmVnZXhfcGFycyA9IGMoImJldGEiKSwgcHJvYiA9IDAuOCwgcHJvYl9vdXRlciA9IDAuOTUsIHBvaW50X2VzdCA9ICJtZWFuIikKYGBgCgrQlNC40LDQs9C90L7RgdGC0LjQutCwCgpgYGB7cn0KcG9zdGVyaW9yXzFiIDwtIGdncyhmaXRfMSkKZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMWIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc190cmFjZXBsb3QnKSAKZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMWIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19jb21wYXJlX3BhcnRpYWwnKSAKZ2dtY21jKEQgPSBwb3N0ZXJpb3JfMWIsIGZpbGUgPSBOVUxMLCBwbG90ID0gJ2dnc19hdXRvY29ycmVsYXRpb24nKSAKYGBgCgoKIyMg0JzQvtC00LXQu9GMINGBINC40L3QtNC40LLQuNC00YPQsNC70YzQvdGL0LzQuCDRgdC80LXRidC10L3QuNGP0LzQuAoKYGBge3J9CmZpdF8yIDwtIHN0YW4oImJheWVzX21vZGVsXzIuc3RhbiIsIGRhdGEgPSBsaXN0X2Zvcl9zdGFuLCBpdGVyID0gNjAwMCwgd2FybXVwID0gMjAwMCkKYGBgCgoKYGBge3J9CnByaW50KGZpdF8yKQpgYGAKCmBgYHtyfQpwb3N0ZXJpb3JfMiA8LSBhcy5hcnJheShmaXRfMikKbWNtY19hcmVhcyhwb3N0ZXJpb3JfMiwgcmVnZXhfcGFycyA9IGMoImludGVyY2VwdCIpLCBwcm9iID0gMC44LCBwcm9iX291dGVyID0gMC45NSwgcG9pbnRfZXN0ID0gIm1lYW4iKQpgYGAKCtCU0LjQsNCz0L3QvtGB0YLQuNC60LAKCmBgYHtyfQpwb3N0ZXJpb3JfMmIgPC0gZ2dzKGZpdF8yKQpnZ21jbWMoRCA9IHBvc3Rlcmlvcl8yYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX3RyYWNlcGxvdCcpIApnZ21jbWMoRCA9IHBvc3Rlcmlvcl8yYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2NvbXBhcmVfcGFydGlhbCcpIApnZ21jbWMoRCA9IHBvc3Rlcmlvcl8yYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2F1dG9jb3JyZWxhdGlvbicpIApgYGAKCiMjINCc0L7QtNC10LvRjCDRgSDQuNC90LTQuNCy0LjQtNGD0LDQu9GM0L3Ri9C80Lgg0YHQvNC10YnQtdC90LjRj9C80Lgg0Lgg0LjQvdC00LjQstC40LTRg9Cw0LvRjNC90YvQvNC4INGA0LDQt9C80LXRgNCw0LzQuCDRjdGE0YTQtdC60YLQsAoKYGBge3J9CmZpdF8zIDwtIHN0YW4oImJheWVzX21vZGVsXzMuc3RhbiIsIGRhdGEgPSBsaXN0X2Zvcl9zdGFuLCBpdGVyID0gNjAwMCwgd2FybXVwID0gMjAwMCkKYGBgCgpgYGB7cn0KcHJpbnQoZml0XzMpCmBgYAoKYGBge3J9CnBvc3Rlcmlvcl8zIDwtIGFzLmFycmF5KGZpdF8zKQptY21jX2FyZWFzKHBvc3Rlcmlvcl8zLCByZWdleF9wYXJzID0gYygiYmV0YSIpLCBwcm9iID0gMC44LCBwcm9iX291dGVyID0gMC45NSwgcG9pbnRfZXN0ID0gIm1lYW4iKQpgYGAKCtCU0LjQsNCz0L3QvtGB0YLQuNC60LAKCmBgYHtyfQpwb3N0ZXJpb3JfM2IgPC0gZ2dzKGZpdF8zKQpnZ21jbWMoRCA9IHBvc3Rlcmlvcl8zYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX3RyYWNlcGxvdCcpIApnZ21jbWMoRCA9IHBvc3Rlcmlvcl8zYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2NvbXBhcmVfcGFydGlhbCcpIApnZ21jbWMoRCA9IHBvc3Rlcmlvcl8zYiwgZmlsZSA9IE5VTEwsIHBsb3QgPSAnZ2dzX2F1dG9jb3JyZWxhdGlvbicpIApgYGAK</div>
 
 
 

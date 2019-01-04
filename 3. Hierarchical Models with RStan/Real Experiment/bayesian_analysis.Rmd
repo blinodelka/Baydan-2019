@@ -1,7 +1,14 @@
 ---
 title: "Bayesian Analysis"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
 
 ```{r}
 library(rstan)
@@ -17,7 +24,7 @@ list_for_stan <- list(nY = nrow(data_for_stan), nS = max(data_for_stan$participa
 
 ## Оценка связи типа иллюзии и разницы между стимулами 
 
-```{r}
+```{r, message = TRUE}
 fit_1 <- stan("bayes_model_1.stan", data = list_for_stan, iter = 6000, warmup = 2000)
 ```
 
@@ -40,9 +47,9 @@ ggmcmc(D = posterior_1b, file = NULL, plot = 'ggs_autocorrelation')
 ```
 
 
-## Оценка связи типа иллюзии и количеством установочных проб
+## Модель с индивидуальными смещениями
 
-```{r}
+```{r, message = TRUE}
 fit_2 <- stan("bayes_model_2.stan", data = list_for_stan, iter = 6000, warmup = 2000)
 ```
 
@@ -51,10 +58,9 @@ fit_2 <- stan("bayes_model_2.stan", data = list_for_stan, iter = 6000, warmup = 
 print(fit_2)
 ```
 
-
 ```{r}
 posterior_2 <- as.array(fit_2)
-mcmc_areas(posterior_2, regex_pars = c("beta"), prob = 0.8, prob_outer = 0.95, point_est = "mean")
+mcmc_areas(posterior_2, regex_pars = c("intercept"), prob = 0.8, prob_outer = 0.95, point_est = "mean")
 ```
 
 Диагностика
@@ -66,9 +72,9 @@ ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_compare_partial')
 ggmcmc(D = posterior_2b, file = NULL, plot = 'ggs_autocorrelation') 
 ```
 
-## Оценка взаимодействия двух факторов
+## Модель с индивидуальными смещениями и индивидуальными размерами эффекта
 
-```{r}
+```{r, message = TRUE}
 fit_3 <- stan("bayes_model_3.stan", data = list_for_stan, iter = 6000, warmup = 2000)
 ```
 

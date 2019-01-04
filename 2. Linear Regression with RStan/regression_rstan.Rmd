@@ -6,6 +6,11 @@ output:
     df_print: paged
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 9, message = FALSE)
+```
+
+
 ```{r}
 library(rstan)
 library(ggmcmc)
@@ -17,6 +22,8 @@ library(bayesplot)
 Y = intercept + slope * X + epsilon
 
 ```{r}
+set.seed(100)
+
 sample_size <- 100
 intercept <- 5
 slope <- -0.8
@@ -32,7 +39,7 @@ data_1 <- list(X = X, Y = Y, N = sample_size)
 
 Оценка смещения, эффекта и стандартного отклонения шума
 
-```{r}
+```{r, message = TRUE}
 model_1 <-
 '
 data {
@@ -58,7 +65,7 @@ model {
 '
 ```
 
-```{r}
+```{r, message = TRUE}
 fit_1 <- stan(model_code = model_1, data = data_1)
 ```
 
@@ -113,7 +120,7 @@ generated quantities {
 '
 ```
 
-```{r}
+```{r, message = TRUE}
 fit_2 <- stan(model_code = model_2, data = data_1)
 ```
 
@@ -129,4 +136,8 @@ ppc_hist(data_1$Y, Y_hat[choice, ])
 ```
 
 Далее: анализ чувствительности результата к априорным распределениям
+
+### Задание: линейная модель с одним предиктором и новыми данными + два предиктора
+
+### категориальные переменные
 
