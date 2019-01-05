@@ -71,6 +71,8 @@ fit_1 <- stan(model_code = model_1, data = data_1)
 
 ```{r}
 print(fit_1)
+
+summary(fit, R2 = TRUE)
 ```
 
 ```{r}
@@ -122,6 +124,8 @@ generated quantities {
 
 ```{r, message = TRUE}
 fit_2 <- stan(model_code = model_2, data = data_1)
+
+summary(fit_2, R2 = TRUE)
 ```
 
 ```{r}
