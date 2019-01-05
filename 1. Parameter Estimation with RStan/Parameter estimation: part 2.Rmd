@@ -1,5 +1,6 @@
 ---
-title: "R Notebook"
+title: "Введение в RStan: Оценка параметров и диагностика результатов"
+author: "Марина Дубова"
 output:
   html_document:
     df_print: paged
