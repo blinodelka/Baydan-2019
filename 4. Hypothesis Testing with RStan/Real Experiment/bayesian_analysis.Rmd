@@ -1,5 +1,5 @@
 ---
-title: "Bayesian Analysis"
+title: "Тестирование гипотез"
 output:
   html_document:
     df_print: paged

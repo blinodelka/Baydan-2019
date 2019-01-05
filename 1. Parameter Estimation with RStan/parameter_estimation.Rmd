@@ -158,8 +158,6 @@ model {
 '
 ```
 
-## ПОКАЗАТЬ ОБЩЕЕ АПОСТЕРИОРНОЕ РАСПРЕДЕЛЕНИЕ
-## СРАВНИТЬ ПРАЙОР И ПОСТЕРИОР
 
 ```{r}
 fit_2 <- stan(model_code = model_2, data = data_1, chains = 3, iter = 5000, warmup = 1000)
@@ -188,3 +186,4 @@ ggmcmc(D = posterior_fit_2, file = NULL, plot = 'ggs_traceplot')
 ggmcmc(D = posterior_fit_2, file = NULL, plot = 'ggs_compare_partial') 
 ggmcmc(D = posterior_fit_2, file = NULL, plot = 'ggs_autocorrelation')
 ```
+
