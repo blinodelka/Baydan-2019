@@ -1,0 +1,103 @@
+---
+title: "Байесовская проверка гипотез с помощью RStan"
+author: "Марина Дубова"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(rstan)
+library(ggmcmc)
+library(bridgesampling)
+```
+
+```{r}
+set.seed(100)
+
+N <- 50
+true_p <- 0.4
+N_test_questions <- 40
+test_scores <- rbinom(N, N_test_questions, true_p)
+data_1 <- list(N = length(test_scores), N_q = N_test_questions, X = test_scores) # формат данных для stan - список с переменными
+```
+
+Нулевая гипотеза: человек не симулирует
+
+```{r}
+H0 <-
+'
+data {
+  int<lower = 0> N;  // размер выборки (больше 0)
+  int<lower = 0> N_q; // количество вопросов теста
+  int<lower = 0> X[N]; // наблюдения - вектор длины N
+}
+
+parameters {
+  real<lower = 0, upper = 1> p; // вероятность единичного успеха в биномиальном распределении
+}
+
+model {
+  p ~ uniform(0.5, 1); // Альтернативная гипотеза
+  for (i in 1:N){
+    X[i] ~ binomial(N_q, p); // функция правдоподобия
+  }
+}
+'
+```
+
+Альтернативная гипотеза: человек симулирует
+
+```{r}
+H1 <-
+'
+data {
+  int<lower = 0> N;  // размер выборки (больше 0)
+  int<lower = 0> N_q; // количество вопросов теста
+  int<lower = 0> X[N]; // наблюдения - вектор длины N
+}
+
+parameters {
+  real<lower = 0, upper = 1> p; // вероятность единичного успеха в биномиальном распределении
+}
+
+model {
+  p ~ uniform(0, 0.5); // Альтернативная гипотеза
+  for (i in 1:N){
+    X[i] ~ binomial(N_q, p); // функция правдоподобия
+  }
+}
+'
+```
+
+```{r}
+# компилируем модели, соответствующие двум гипотезам
+stanmodelH0 <- stan_model(model_code = H0, model_name = 'H0') 
+stanmodelH1 <- stan_model(model_code = H1, model_name = 'H1')
+
+# сэмплируем "предсказания" каждой из гипотез (моделей), нужно сгенерировать очень много 
+fit_H0 <- sampling(stanmodelH0, data_1, iter = 20000, warmup = 1000)
+fit_H1 <- sampling(stanmodelH1, data_1, iter = 20000, warmup = 1000)
+```
+
+```{r}
+# считаем логарифм правдоподобия имеющихся данных для каждой из гипотез (моделей)
+H0_res <- bridge_sampler(fit_H0, silent = TRUE)
+H1_res <- bridge_sampler(fit_H1, silent = TRUE)
+print(H0_res)
+print(H1_res)
+```
+
+```{r}
+error_measures(H0_res)$percentage
+error_measures(H1_res)$percentage
+```
+
+```{r}
+# считаем Байес-фактор (в пользу альтернативной гипотезы)
+BF10 <- bf(H1_res, H0_res)
+print(BF10)
+
+BF01 <- bf(H0_res, H1_res)
+print(BF01)
+```
