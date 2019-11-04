@@ -25,3 +25,5 @@ Materials for Bayesian data analysis practice with RStan (In Russian)
 4.2 Bridgesampling and computing of Bayes-factor
 
 4.3 Testing hypotheses of the real experiment
+
+Some of the materials are adapted from or inspired by the Summer School of Statistical Methods for Linguistics and Psychology (Potsdam, 2017). Materials from this school can be found here: https://vasishth.github.io/SMLP2017/.
